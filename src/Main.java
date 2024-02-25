@@ -22,7 +22,6 @@ public class Main {
     static Meniu meniu = new Meniu(optiuniMeniu);
 
 
-
     //aici fac verificari --> userul sa introduca un int, nu alte caractere
     public static int getUserInput(Scanner scanner){
         System.out.println("Your choice: ");
@@ -37,6 +36,61 @@ public class Main {
         }
     }
 
+//    public static HashMap<String, Float> comanda(Scanner scanner){
+//        HashMap<String, Float> comanda = null;
+//        System.out.println("Alegeti o optiune din meniu: ");
+//        String optiune = scanner.nextLine();
+//        Float pret = optiuniMeniu.get(optiune);
+//        float total = 0;
+//        if(pret != null){
+//            comanda.put(optiune, pret);
+//            total+=pret;
+//        }
+//
+//        return comanda;
+//    }
+
+    //functia asta trebuie utilizata atat pentru comenzi la domiciliu, cat si pentru comenzi in restaurant.
+    //OPTIMIZARE!!!!!
+    public static boolean finalulComenzii(Scanner scanner){
+        boolean finalulComenzii = false;
+        String continuareComanda = "a";   //variabila care ma ajuta sa verific daca utilizatorul introduce altceva decat ce vreau eu sa introduca, adica y sau n
+
+        while(!continuareComanda.equals("n") && !continuareComanda.equals("y")){
+            System.out.println("Mai doriti altceva? (y/n): ");
+            continuareComanda = scanner.nextLine();
+
+            if(continuareComanda.equals("n"))
+                finalulComenzii = true;
+
+            if(!continuareComanda.equals("n") || !continuareComanda.equals("y"))
+                System.out.println("Introduceti una dintre optiunile: y sau n");
+        }
+
+        return finalulComenzii;
+    }
+
+    public static float comanda(Scanner scanner){
+        boolean finalulComenzii = false;
+        float total = 0;
+        String optiune;
+        while(!finalulComenzii){
+            System.out.println("Alegeti o optiune din meniu: ");
+            optiune = scanner.nextLine();
+            System.out.println("Alegeti cantitatea: ");
+            int cantitate = scanner.nextInt();
+            scanner.nextLine();
+            Float pret = optiuniMeniu.get(optiune);
+            if(pret != null){
+                total += pret*cantitate;
+            }
+
+            finalulComenzii = finalulComenzii(scanner);
+
+        }
+        return total;
+    }
+
     public static void userInput(Scanner scanner){
         while(true){
             meniu.displayMenu();
@@ -49,8 +103,14 @@ public class Main {
                     System.out.println("\n\nMesele disponibile sunt: " + meseDisponibile);
                     System.out.println("Alegeti o masa: ");
                     int masa = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.println("Ati ocupat masa " + masa + "\n");
                     restaurant.ocupaMasa(masa);
+
+
+                    //comanda mancare
+                    float total = comanda(scanner);
+                    System.out.println("Ati comandat in valoare de " + total + " RON");
 
                     break;
                 case 2:
